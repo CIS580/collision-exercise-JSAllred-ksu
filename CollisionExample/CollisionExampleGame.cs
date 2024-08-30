@@ -72,7 +72,20 @@ namespace CollisionExample
             // TODO: Add your update logic here
             slimeGhost.Update(gameTime);
 
-            base.Update(gameTime);
+            // detect and process collisions
+            slimeGhost.Color = Color.White;
+
+            foreach (var coin in coins)
+            {
+                if (! coin.Collected && coin.Bounds.CollidesWith(slimeGhost.Bounds))
+                {
+                    slimeGhost.Color = Color.Red;
+                    coin.Collected = true;
+                    coinsLeft--;
+                }
+            }
+
+                base.Update(gameTime);
         }
 
         /// <summary>
@@ -85,7 +98,11 @@ namespace CollisionExample
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            foreach (var coin in coins) coin.Draw(gameTime, spriteBatch);
+            foreach (var coin in coins)
+            {
+                coin.Draw(gameTime, spriteBatch);
+            }
+            
             slimeGhost.Draw(gameTime, spriteBatch);
             spriteBatch.DrawString(spriteFont, $"Coins left: {coinsLeft}", new Vector2(2,2), Color.Gold);
             spriteBatch.End();
